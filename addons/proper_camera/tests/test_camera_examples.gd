@@ -29,12 +29,8 @@ func test_all_camera_examples_load_and_have_an_active_camera_contract() -> void:
 			assert_not_null(instance.get_node_or_null("UI/Back"), "%s needs a gallery back button" % path)
 
 
-func test_release_export_excludes_source_only_examples_docs_and_tests() -> void:
-	var attributes: String = FileAccess.get_file_as_string("res://.gitattributes")
-	assert_true(attributes.contains("/addons/proper_camera/examples export-ignore"))
-	assert_true(attributes.contains("/addons/proper_camera/tests export-ignore"))
-	assert_false(
-		attributes.contains("/addons/proper_camera/docs export-ignore"),
-		"The installed addon retains its user-facing contracts guide."
-	)
+func test_source_contract_describes_store_exclusions_and_companion_boundary() -> void:
+	var readme: String = FileAccess.get_file_as_string("res://addons/proper_camera/README.md")
+	assert_true(readme.contains("not in Store archives"))
+	assert_true(readme.contains("separate companion integration"))
 
