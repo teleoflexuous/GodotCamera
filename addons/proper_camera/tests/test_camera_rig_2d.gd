@@ -146,11 +146,11 @@ func test_toggle_follow_centers_then_tracks_a_moving_and_stationary_target() -> 
 	var press := InputEventKey.new()
 	press.physical_keycode = KEY_F
 	press.pressed = true
-	Input.parse_input_event(press)
+	adapter._unhandled_input(press)
 	await get_tree().process_frame
 	var release := InputEventKey.new()
 	release.physical_keycode = KEY_F
-	Input.parse_input_event(release)
+	adapter._unhandled_input(release)
 
 	assert_true(rig.is_following())
 	assert_eq(rig.get_view_metrics()[&"focus_position"], target.global_position)

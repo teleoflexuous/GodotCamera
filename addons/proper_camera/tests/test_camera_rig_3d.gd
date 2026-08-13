@@ -161,8 +161,8 @@ func test_pan_up_uses_view_forward_and_recenter_reacquires_follow() -> void:
 	assert_lt(rig.get_focus_position().x, 0.0, "W/left-stick-up must rotate with the view basis.")
 
 	var target := Node3D.new()
-	target.global_position = Vector3(25.0, 0.0, -12.0)
 	add_child_autofree(target)
+	target.global_position = Vector3(25.0, 0.0, -12.0)
 	rig.set_follow_target(target, true)
 	rig.pan_by_world(Vector3(4.0, 0.0, 0.0))
 	assert_false(rig.is_following())

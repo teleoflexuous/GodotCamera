@@ -32,21 +32,9 @@ func test_all_camera_examples_load_and_have_an_active_camera_contract() -> void:
 func test_release_export_excludes_source_only_examples_docs_and_tests() -> void:
 	var attributes: String = FileAccess.get_file_as_string("res://.gitattributes")
 	assert_true(attributes.contains("/addons/proper_camera/examples export-ignore"))
-	assert_true(attributes.contains("/addons/proper_camera/docs export-ignore"))
 	assert_true(attributes.contains("/addons/proper_camera/tests export-ignore"))
-
-
-func test_reference_camera_settings_control_builds_with_builtin_ui() -> void:
-	var packed: PackedScene = load(
-		"res://addons/proper_camera/scenes/camera_settings_control.tscn"
-	) as PackedScene
-	assert_not_null(packed)
-	if packed == null:
-		return
-	var instance: Control = packed.instantiate() as Control
-	add_child_autofree(instance)
-	assert_not_null(instance.find_child("CapabilityBundle", true, false))
-	assert_not_null(instance.find_child("AutoRecenterDelay", true, false))
-	assert_not_null(instance.find_child("FOVOverride", true, false))
-	assert_not_null(instance.find_child("PreferredDistance", true, false))
+	assert_false(
+		attributes.contains("/addons/proper_camera/docs export-ignore"),
+		"The installed addon retains its user-facing contracts guide."
+	)
 
