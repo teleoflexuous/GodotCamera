@@ -1,0 +1,18 @@
+name: Validate ProperCamera
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: firebelley/setup-godot@v1
+        with:
+          godot-version: '4.7.0'
+      - name: Import the standalone gallery project
+        run: godot --headless --path . --import
+      - name: Parse the addon in the editor project
+        run: godot --headless --path . --editor --quit

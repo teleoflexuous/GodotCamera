@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+# The Store download only needs the installable addon.
+/** export-ignore
+/addons !export-ignore
+/addons/proper_camera !export-ignore
+/addons/proper_camera/** !export-ignore
+/addons/proper_camera/tests export-ignore
+/addons/proper_camera/docs export-ignore
+/addons/proper_camera/examples export-ignore
