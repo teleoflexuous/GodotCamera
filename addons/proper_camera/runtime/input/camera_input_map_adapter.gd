@@ -46,25 +46,25 @@ func _process(delta: float) -> void:
 		_strength(actions.zoom_in_rate) - _strength(actions.zoom_out_rate),
 		delta
 	)
-	if _just_pressed(actions.zoom_in_step):
-		submit_zoom_steps(1.0)
-	if _just_pressed(actions.zoom_out_step):
-		submit_zoom_steps(-1.0)
-	if _just_pressed(actions.recenter):
-		submit_recenter()
-	if _just_pressed(actions.follow_toggle):
-		submit_follow_toggle()
-	if _just_pressed(actions.view_toggle):
-		submit_view_toggle()
-	if _just_pressed(actions.rotate_left):
-		submit_rotation_step(-1.0)
-	if _just_pressed(actions.rotate_right):
-		submit_rotation_step(1.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not input_enabled or actions == null:
 		return
+	if event.is_action_pressed(actions.zoom_in_step):
+		submit_zoom_steps(1.0)
+	if event.is_action_pressed(actions.zoom_out_step):
+		submit_zoom_steps(-1.0)
+	if event.is_action_pressed(actions.recenter):
+		submit_recenter()
+	if event.is_action_pressed(actions.follow_toggle):
+		submit_follow_toggle()
+	if event.is_action_pressed(actions.view_toggle):
+		submit_view_toggle()
+	if event.is_action_pressed(actions.rotate_left):
+		submit_rotation_step(-1.0)
+	if event.is_action_pressed(actions.rotate_right):
+		submit_rotation_step(1.0)
 	if event is InputEventMouse:
 		var mouse_event: InputEventMouse = event
 		submit_pointer_position(mouse_event.position)

@@ -145,11 +145,10 @@ func test_toggle_follow_centers_then_tracks_a_moving_and_stationary_target() -> 
 	await get_tree().process_frame
 	var press: InputEventKey = InputMap.action_get_events(&"camera_follow_toggle")[0].duplicate() as InputEventKey
 	press.pressed = true
-	Input.parse_input_event(press)
-	adapter._process(1.0 / 60.0)
+	adapter._unhandled_input(press)
 	var release: InputEventKey = press.duplicate() as InputEventKey
 	release.pressed = false
-	Input.parse_input_event(release)
+	adapter._unhandled_input(release)
 
 	assert_true(rig.is_following())
 	assert_eq(rig.get_view_metrics()[&"focus_position"], target.global_position)
