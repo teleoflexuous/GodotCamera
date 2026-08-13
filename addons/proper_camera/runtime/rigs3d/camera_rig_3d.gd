@@ -76,6 +76,7 @@ var _search_yaw_offset: float = 0.0
 var _search_shoulder_offset: float = 0.0
 var _search_recheck_remaining: float = 0.0
 var _search_clear_time: float = 0.0
+var _search_center_route_blocked: bool = false
 var _recovery_distance: float = 0.0
 var _last_metrics: Dictionary = {}
 var _last_effect_translation: Vector3 = Vector3.ZERO
@@ -279,7 +280,9 @@ func pan_direction(direction: Vector2, delta: float) -> void:
 	var safe_direction: Vector2 = direction.limit_length(1.0)
 	var right: Vector3 = Vector3(cos(_yaw), 0.0, -sin(_yaw))
 	var forward: Vector3 = Vector3(-sin(_yaw), 0.0, -cos(_yaw))
-	_pan_world((right * safe_direction.x + forward * safe_direction.y) * preset.pan_speed * maxf(delta, 0.0))
+	# InputMap and GUIDE use Vector2.UP for W/left-stick-up. Camera forward is
+	# Godot's local -Z, so vertical intent must be inverted at this boundary.
+	_pan_world((right * safe_direction.x - forward * safe_direction.y) * preset.pan_speed * maxf(delta, 0.0))
 
 
 func pan_by_screen(screen_delta: Vector2) -> void:
@@ -371,8 +374,13 @@ func get_focus_position() -> Vector3:
 
 func recenter() -> void:
 	_follow_offset = Vector3.ZERO
-	if is_following():
-		snap_to_target()
+	var target: Node3D = get_follow_target()
+	if target == null:
+		return
+	if not _follow_active:
+		_follow_active = true
+		follow_state_changed.emit(true)
+	snap_to_target()
 
 
 func snap_to_target() -> void:
@@ -457,6 +465,15 @@ func get_view_metrics() -> Dictionary:
 		&"focus_position": _focus_position,
 		&"desired_world_units_per_pixel": _calculate_world_units_per_pixel(desired_distance),
 		&"actual_world_units_per_pixel": _calculate_world_units_per_pixel(_actual_distance),
+	}
+
+
+func get_occlusion_debug_state() -> Dictionary:
+	return {
+		&"center_route_blocked": _search_center_route_blocked,
+		&"yaw_offset": _search_yaw_offset,
+		&"shoulder_offset": _search_shoulder_offset,
+		&"actual_distance": _actual_distance,
 	}
 
 
@@ -676,16 +693,19 @@ func _update_occlusion_search(delta: float) -> void:
 		_blocked_time = 0.0
 		_search_recheck_remaining = 0.0
 		_search_clear_time = 0.0
+		_search_center_route_blocked = false
 		return
 	if preset.occlusion_mode != ProperCameraRigTypes.OcclusionMode.PULL_IN_AND_SEARCH:
 		_return_search_to_center(delta)
 		return
 	var desired_distance: float = _desired_distance()
-	# SpringArm owns the current collision solve. Compare against its active
-	# length, not the authored desired distance: recovery intentionally shortens
-	# the arm and otherwise makes edge contacts oscillate between states.
-	var blocked: bool = _spring_arm.get_hit_length() + preset.collision_margin < _spring_arm.spring_length
-	if not blocked:
+	# The final SpringArm follows the selected escape route. It will therefore
+	# report clear once that route works, even though the authored centered shot
+	# remains obstructed. Probe that authored route separately so an edge contact
+	# cannot repeatedly clear, recenter, collide, and search again.
+	var center_clearance: float = _probe_route_clearance(0.0, 0.0, desired_distance)
+	_search_center_route_blocked = center_clearance + preset.collision_margin < desired_distance
+	if not _search_center_route_blocked:
 		_blocked_time = 0.0
 		_search_recheck_remaining = 0.0
 		_search_clear_time += maxf(delta, 0.0)
@@ -709,11 +729,17 @@ func _update_occlusion_search(delta: float) -> void:
 		_search_shoulder_offset,
 		desired_distance
 	)
+	var current_clearance: float = _probe_route_clearance(
+		_search_yaw_offset,
+		_search_shoulder_offset,
+		desired_distance
+	)
 	# Do not replace a viable escape route simply because a periodic requery has
 	# a numerically different winner. A new route must materially improve the
 	# score; the current route remains until clearance has been stable enough to
 	# return to center.
-	if candidate_score > current_score + _SEARCH_HYSTERESIS:
+	if current_clearance + preset.collision_margin < desired_distance \
+			or candidate_score > current_score + _SEARCH_HYSTERESIS:
 		var next_yaw: float = float(result["yaw"])
 		var next_shoulder: float = float(result["shoulder"])
 		if not is_equal_approx(next_yaw, _search_yaw_offset) or not is_equal_approx(next_shoulder, _search_shoulder_offset):
@@ -748,24 +774,38 @@ func _find_best_search_candidate(desired_distance: float) -> Dictionary:
 
 
 func _score_search_candidate(yaw_offset: float, shoulder_offset: float, desired_distance: float) -> float:
-	if not is_inside_tree():
-		return 0.0
-	var from: Vector3 = _focus_pivot.global_position
-	var basis: Basis = Basis.from_euler(Vector3(_pitch, _yaw + yaw_offset, 0.0))
-	var to: Vector3 = from + basis * Vector3(shoulder_offset, 0.0, desired_distance)
-	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
-		from,
-		to,
-		preset.collision_mask,
-		_get_collision_exclusion_rids()
-	)
-	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(query)
-	var clearance: float = desired_distance
-	if not hit.is_empty():
-		clearance = from.distance_to(Vector3(hit["position"]))
+	var clearance: float = _probe_route_clearance(yaw_offset, shoulder_offset, desired_distance)
 	var deviation_penalty: float = absf(yaw_offset) * 0.25 + absf(shoulder_offset) * 0.1
 	var continuity_penalty: float = absf(yaw_offset - _search_yaw_offset) * 0.1
 	return clearance - deviation_penalty - continuity_penalty
+
+
+func _probe_route_clearance(yaw_offset: float, shoulder_offset: float, distance: float) -> float:
+	if not is_inside_tree() or preset == null:
+		return 0.0
+	var basis: Basis = Basis.from_euler(Vector3(_pitch, _yaw + yaw_offset, 0.0))
+	var from: Vector3 = _focus_pivot.global_position + basis * Vector3(shoulder_offset, 0.0, 0.0)
+	var motion: Vector3 = basis * Vector3(0.0, 0.0, distance)
+	var exclusions: Array[RID] = _get_collision_exclusion_rids()
+	var space_state: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	if _spring_arm.shape != null:
+		var shape_query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+		shape_query.shape = _spring_arm.shape
+		shape_query.transform = Transform3D(basis, from)
+		shape_query.motion = motion
+		shape_query.collision_mask = preset.collision_mask
+		shape_query.exclude = exclusions
+		var fractions: PackedFloat32Array = space_state.cast_motion(shape_query)
+		if not fractions.is_empty():
+			return maxf(distance * fractions[0] - preset.collision_margin, 0.0)
+	var ray_query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		from,
+		from + motion,
+		preset.collision_mask,
+		exclusions
+	)
+	var hit: Dictionary = space_state.intersect_ray(ray_query)
+	return from.distance_to(Vector3(hit["position"])) - preset.collision_margin if not hit.is_empty() else distance
 
 
 func _return_search_to_center(delta: float) -> void:

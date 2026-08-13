@@ -69,6 +69,6 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 940.0
 offset_bottom = 95.0
-text = "3D RTS / MOBA - WASD/stick or edge pan | MMB drag | wheel/+/- zoom | F toggle hero follow | R recenter"
+text = "3D RTS / MOBA - W/S advance/retreat in view | A/D strafe | MMB drag | wheel/+/- zoom | F follow | R recenter"
 autowrap_mode = 2
 

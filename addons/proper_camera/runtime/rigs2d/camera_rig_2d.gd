@@ -186,7 +186,12 @@ func set_follow_enabled(enabled: bool) -> void:
 func toggle_follow() -> void:
 	if not input_enabled:
 		return
-	set_following(not _following)
+	if _following:
+		set_following(false)
+		return
+	# A player-initiated follow action is a request to frame the target, not
+	# merely preserve the previous free-camera offset.
+	recenter()
 
 
 func is_following() -> bool:

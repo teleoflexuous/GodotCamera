@@ -141,6 +141,36 @@ func test_bounds_clamp_focus_position() -> void:
 	assert_eq(rig.get_focus_position(), Vector3(4.0, -1.0, 6.0))
 
 
+func test_pan_up_uses_view_forward_and_recenter_reacquires_follow() -> void:
+	var rig: ProperCameraRig3D = await _create_rig()
+	var local_preset: ProperCameraPreset3D = rig.preset.duplicate(true) as ProperCameraPreset3D
+	local_preset.pan_enabled = true
+	local_preset.pan_speed = 10.0
+	local_preset.look_enabled = true
+	local_preset.starting_yaw_degrees = 0.0
+	local_preset.follow_interruption = ProperCameraRigTypes.FollowInterruption.BREAK_ON_PAN
+	rig.apply_preset(local_preset)
+	rig.set_focus_position(Vector3.ZERO)
+	rig.pan_direction(Vector2.UP, 1.0)
+	assert_lt(rig.get_focus_position().z, 0.0, "W/left-stick-up must move along camera forward at yaw 0.")
+
+	local_preset.starting_yaw_degrees = 90.0
+	rig.apply_preset(local_preset)
+	rig.set_focus_position(Vector3.ZERO)
+	rig.pan_direction(Vector2.UP, 1.0)
+	assert_lt(rig.get_focus_position().x, 0.0, "W/left-stick-up must rotate with the view basis.")
+
+	var target := Node3D.new()
+	target.global_position = Vector3(25.0, 0.0, -12.0)
+	add_child_autofree(target)
+	rig.set_follow_target(target, true)
+	rig.pan_by_world(Vector3(4.0, 0.0, 0.0))
+	assert_false(rig.is_following())
+	rig.recenter()
+	assert_true(rig.is_following())
+	assert_eq(rig.get_focus_position(), target.global_position + local_preset.target_offset)
+
+
 func test_player_fov_and_distance_overrides_respect_preset_limits() -> void:
 	var rig: ProperCameraRig3D = await _create_rig()
 	var local_preset: ProperCameraPreset3D = rig.preset.duplicate(true) as ProperCameraPreset3D
@@ -196,7 +226,7 @@ func test_native_spring_arm_compresses_for_an_obstacle_and_recovers() -> void:
 	assert_gt(float(rig.get_view_metrics()[&"actual_distance"]), compressed_distance)
 
 
-func test_active_occlusion_search_does_not_thrash_at_an_obstacle_edge() -> void:
+func test_active_occlusion_search_stays_stable_at_a_character_occlusion_edge() -> void:
 	var rig: ProperCameraRig3D = await _create_rig()
 	var local_preset: ProperCameraPreset3D = rig.preset.duplicate(true) as ProperCameraPreset3D
 	local_preset.zoom_mechanism = ProperCameraRigTypes.ZoomMechanism3D.DOLLY
@@ -210,8 +240,14 @@ func test_active_occlusion_search_does_not_thrash_at_an_obstacle_edge() -> void:
 	local_preset.search_query_budget = 4
 	local_preset.search_max_yaw_degrees = 35.0
 	local_preset.collision_mask = 1
+	local_preset.follow_enabled = true
+	local_preset.follow_smoothing_speed = 0.0
+	local_preset.target_offset = Vector3.ZERO
 	rig.apply_preset(local_preset)
 	rig.set_zoom_normalized(1.0, true)
+	var target := Node3D.new()
+	add_child_autofree(target)
+	rig.set_follow_target(target, true)
 	var obstacle: StaticBody3D = StaticBody3D.new()
 	obstacle.position = Vector3(0.0, 0.0, 5.0)
 	var collision: CollisionShape3D = CollisionShape3D.new()
@@ -220,20 +256,43 @@ func test_active_occlusion_search_does_not_thrash_at_an_obstacle_edge() -> void:
 	collision.shape = shape
 	obstacle.add_child(collision)
 	add_child_autofree(obstacle)
-	await get_tree().physics_frame
-	await get_tree().physics_frame
+	await _wait_for_camera(rig, 2.0)
+	var state: Dictionary = rig.get_occlusion_debug_state()
+	assert_true(bool(state[&"center_route_blocked"]), "The authored centered route must remain blocked.")
+	assert_gt(absf(float(state[&"yaw_offset"])) + absf(float(state[&"shoulder_offset"])), 0.001)
+
 	var transitions: Array[Vector2] = []
 	rig.occlusion_search_changed.connect(func(yaw: float, shoulder: float) -> void:
 		transitions.append(Vector2(yaw, shoulder))
 	)
-	for index: int in range(16):
-		# Repeatedly cross the collision edge as a character would when strafing.
-		rig.set_focus_position(Vector3(-0.42 if index % 2 == 0 else 0.42, 0.0, 0.0))
-		await get_tree().physics_frame
-		rig._physics_process(0.05)
-		rig._process(0.05)
+	await _assert_idle_shot_is_stable(rig, 2.0)
+	assert_eq(transitions.size(), 0, "An idle edge shot must not search again.")
 
-	assert_lt(transitions.size(), 4, "Edge movement must not alternate search routes every frame.")
+	target.global_position.x = -0.25
+	await _wait_for_camera(rig, 2.0)
+	transitions.clear()
+	await _assert_idle_shot_is_stable(rig, 2.0)
+	assert_eq(transitions.size(), 0, "The left edge shot must settle without route churn.")
+
+	target.global_position.x = 0.25
+	await _wait_for_camera(rig, 2.0)
+	transitions.clear()
+	await _assert_idle_shot_is_stable(rig, 2.0)
+	assert_eq(transitions.size(), 0, "The right edge shot must settle without route churn.")
+
+
+func _wait_for_camera(_rig: ProperCameraRig3D, seconds: float) -> void:
+	for _frame: int in range(roundi(seconds * 60.0)):
+		await get_tree().physics_frame
+		await get_tree().process_frame
+
+
+func _assert_idle_shot_is_stable(rig: ProperCameraRig3D, seconds: float) -> void:
+	var camera_position: Vector3 = rig.get_camera().global_position
+	var actual_distance: float = float(rig.get_view_metrics()[&"actual_distance"])
+	await _wait_for_camera(rig, seconds)
+	assert_true(rig.get_camera().global_position.is_equal_approx(camera_position))
+	assert_almost_eq(float(rig.get_view_metrics()[&"actual_distance"]), actual_distance, 0.001)
 
 
 func _create_rig() -> ProperCameraRig3D:

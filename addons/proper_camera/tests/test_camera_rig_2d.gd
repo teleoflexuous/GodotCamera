@@ -121,6 +121,48 @@ func test_recenter_reacquires_and_snaps_a_2d_follow_target() -> void:
 	assert_eq(rig.get_view_metrics()[&"focus_position"], target.global_position)
 
 
+func test_toggle_follow_centers_then_tracks_a_moving_and_stationary_target() -> void:
+	var rig: ProperCameraRig2D = await _create_rig()
+	var local_preset: ProperCameraPreset2D = rig.preset.duplicate(true) as ProperCameraPreset2D
+	local_preset.follow_enabled = false
+	local_preset.follow_smoothing_speed = 0.0
+	local_preset.look_ahead_distance = Vector2.ZERO
+	local_preset.dead_zone = Vector2.ZERO
+	local_preset.bounds_enabled = false
+	rig.apply_preset(local_preset)
+	var target := Node2D.new()
+	target.global_position = Vector2(160.0, -90.0)
+	add_child_autofree(target)
+	rig.set_follow_target(target, false)
+	rig.set_following(false)
+	rig.set_focus_position(Vector2(-300.0, 240.0), true)
+
+	# This is the same physical InputMap event used by the management demo.
+	var adapter := ProperCameraInputMapAdapter.new()
+	adapter.install_missing_actions = true
+	adapter.camera_rig = rig
+	add_child_autofree(adapter)
+	await get_tree().process_frame
+	var press := InputEventKey.new()
+	press.physical_keycode = KEY_F
+	press.pressed = true
+	Input.parse_input_event(press)
+	await get_tree().process_frame
+	var release := InputEventKey.new()
+	release.physical_keycode = KEY_F
+	Input.parse_input_event(release)
+
+	assert_true(rig.is_following())
+	assert_eq(rig.get_view_metrics()[&"focus_position"], target.global_position)
+	target.global_position += Vector2(75.0, 40.0)
+	rig._process(1.0 / 60.0)
+	assert_eq(rig.get_view_metrics()[&"focus_position"], target.global_position)
+	var parked_center: Vector2 = rig.get_view_metrics()[&"focus_position"]
+	for _frame: int in range(120):
+		rig._process(1.0 / 60.0)
+	assert_eq(rig.get_view_metrics()[&"focus_position"], parked_center)
+
+
 func test_lost_target_holds_the_last_view_and_emits() -> void:
 	var rig: ProperCameraRig2D = await _create_rig()
 	var local_preset: ProperCameraPreset2D = rig.preset.duplicate(true) as ProperCameraPreset2D

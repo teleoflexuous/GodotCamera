@@ -6,6 +6,7 @@ const EXAMPLES: Array[Dictionary] = [
 	{"name": "3D character", "path": "res://addons/proper_camera/examples/3d_character.tscn"},
 	{"name": "3D management", "path": "res://addons/proper_camera/examples/3d_management.tscn"},
 	{"name": "3D RTS / MOBA", "path": "res://addons/proper_camera/examples/3d_rts_moba.tscn"},
+	{"name": "Occlusion stability lab", "path": "res://addons/proper_camera/examples/occlusion_stability_lab.tscn"},
 ]
 
 

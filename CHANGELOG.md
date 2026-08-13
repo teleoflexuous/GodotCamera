@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - Unreleased
+
+- Stabilized active character-camera occlusion at authored-route edges.
+- Made follow and recenter controls center assigned targets consistently.
+- Corrected forward/backward 3D management and RTS pan direction.
+- Prepared the distributable addon for the Godot Asset Store.
+
 ## 1.0.0 - 2026-08-13
 
 - Initial ProperCamera release for Godot 4.7.

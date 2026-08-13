@@ -6,5 +6,4 @@
 /addons/proper_camera !export-ignore
 /addons/proper_camera/** !export-ignore
 /addons/proper_camera/tests export-ignore
-/addons/proper_camera/docs export-ignore
 /addons/proper_camera/examples export-ignore

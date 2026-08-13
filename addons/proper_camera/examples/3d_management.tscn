@@ -67,6 +67,6 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 920.0
 offset_bottom = 95.0
-text = "3D MANAGEMENT - WASD/stick or edge pan | MMB drag | RMB orbit | wheel/+/- zoom to cursor | F follow | Q/E rotate"
+text = "3D MANAGEMENT - W/S advance/retreat in view | A/D strafe | MMB drag | RMB orbit | wheel/+/- zoom | F follow | R recenter | Q/E rotate"
 autowrap_mode = 2
 

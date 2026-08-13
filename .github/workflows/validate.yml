@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  import:
-    runs-on: ubuntu-latest
+  validate:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: firebelley/setup-godot@v1
@@ -14,5 +14,14 @@ jobs:
           godot-version: '4.7.0'
       - name: Import the standalone gallery project
         run: godot --headless --path . --import
-      - name: Parse the addon in the editor project
-        run: godot --headless --path . --editor --quit
+      - name: Install GUT for source-only addon tests
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/bitwes/Gut/archive/refs/tags/v9.6.0.zip -OutFile gut.zip
+          Expand-Archive gut.zip -DestinationPath .ci -Force
+          Move-Item .ci/Gut-9.6.0/addons/gut addons/gut
+      - name: Run ProperCamera tests
+        run: godot --headless --path . -s res://addons/gut/gut_cmdln.gd -gdir=res://addons/proper_camera/tests -ginclude_subdirs -gexit
+      - name: Build and validate the Asset Store archive
+        shell: pwsh
+        run: ./tools/package_asset_store.ps1 -GodotBin godot

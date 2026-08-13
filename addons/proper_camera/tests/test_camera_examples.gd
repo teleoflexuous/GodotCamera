@@ -6,6 +6,7 @@ const EXAMPLE_PATHS: Array[String] = [
 	"res://addons/proper_camera/examples/3d_character.tscn",
 	"res://addons/proper_camera/examples/3d_management.tscn",
 	"res://addons/proper_camera/examples/3d_rts_moba.tscn",
+	"res://addons/proper_camera/examples/occlusion_stability_lab.tscn",
 	"res://addons/proper_camera/examples/camera_gallery.tscn",
 ]
 
