@@ -44,4 +44,3 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Choose a compact playable preset. Each scene shows its controls and can be edited independently."
 autowrap_mode = 2
-

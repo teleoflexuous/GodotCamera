@@ -124,4 +124,3 @@ func _has_shader_parameter(target: GeometryInstance3D) -> bool:
 		if StringName(parameter.get(&"name", &"")) == shader_parameter:
 			return true
 	return false
-

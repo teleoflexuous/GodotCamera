@@ -300,4 +300,3 @@ func _create_rig() -> ProperCameraRig3D:
 	add_child_autofree(rig)
 	await get_tree().process_frame
 	return rig
-

@@ -35,4 +35,3 @@ search_delay = 0.25
 search_query_budget = 5
 search_max_yaw_degrees = 28.0
 search_shoulder_distance = 0.7
-

@@ -112,4 +112,3 @@ func _has_shader_parameter(target: CanvasItem) -> bool:
 		if StringName(parameter.get(&"name", &"")) == shader_parameter:
 			return true
 	return false
-

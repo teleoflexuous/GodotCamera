@@ -43,4 +43,3 @@ func _physics_process(delta: float) -> void:
 		return
 	var direction: Vector2 = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	_target.position += Vector3(direction.x, 0.0, direction.y) * 5.0 * delta
-

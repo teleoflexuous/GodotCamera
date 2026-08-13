@@ -239,4 +239,3 @@ func _sample_wave(time: float, frequency_hz: float, random_seed: int) -> float:
 	var primary: float = sin(time * frequency_hz * TAU + phase)
 	var secondary: float = sin(time * frequency_hz * 0.437 * TAU + phase * 1.913)
 	return primary * 0.72 + secondary * 0.28
-

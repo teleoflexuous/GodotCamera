@@ -169,4 +169,3 @@ func _just_pressed(action: StringName) -> bool:
 
 func _has_action(action: StringName) -> bool:
 	return not action.is_empty() and InputMap.has_action(action)
-

@@ -95,4 +95,3 @@ func test_camera_preferences_sanitize_accessibility_ranges() -> void:
 	assert_eq(prefs.horizontal_sensitivity, ProperCameraUserPreferences.MIN_SENSITIVITY)
 	assert_eq(prefs.preferred_fov_degrees, 179.0)
 	assert_eq(prefs.motion_intensity, 1.0)
-

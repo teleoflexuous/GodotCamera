@@ -54,4 +54,3 @@ enum DetailMetricSource {
 	DESIRED,
 	ACTUAL,
 }
-

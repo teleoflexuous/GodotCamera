@@ -43,4 +43,3 @@ offset_right = 760.0
 offset_bottom = 92.0
 text = "2D MANAGEMENT - WASD/arrows or edge pan | MMB drag | wheel/+/- zoom | F follow/release | R recenter"
 autowrap_mode = 2
-

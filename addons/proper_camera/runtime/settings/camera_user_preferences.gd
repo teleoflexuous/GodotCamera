@@ -69,4 +69,3 @@ func apply_dictionary(values: Dictionary) -> void:
 	preferred_distance = float(values.get("preferred_distance", preferred_distance))
 	motion_intensity = float(values.get("motion_intensity", motion_intensity))
 	sanitize()
-

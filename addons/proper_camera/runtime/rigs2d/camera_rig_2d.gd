@@ -831,4 +831,3 @@ func _exp_smoothing_weight(speed: float, delta: float) -> float:
 	if speed <= 0.0:
 		return 1.0
 	return 1.0 - exp(-speed * maxf(delta, 0.0))
-

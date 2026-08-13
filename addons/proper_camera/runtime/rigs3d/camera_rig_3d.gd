@@ -1087,4 +1087,3 @@ func _smooth_vector3(current: Vector3, target: Vector3, speed: float, delta: flo
 	if speed <= 0.0:
 		return target
 	return current.lerp(target, 1.0 - exp(-speed * maxf(delta, 0.0)))
-

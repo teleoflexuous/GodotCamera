@@ -20,4 +20,3 @@ position_smoothing_enabled = false
 process_priority = 20
 script = ExtResource("3_effects")
 target_pivot_path = NodePath("../FocusPivot/EffectPivot")
-

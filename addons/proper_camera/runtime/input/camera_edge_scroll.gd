@@ -50,4 +50,3 @@ func set_ui_blocked(blocked: bool) -> void:
 
 func set_drag_blocked(blocked: bool) -> void:
 	drag_blocked = blocked
-

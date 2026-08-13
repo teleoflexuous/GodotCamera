@@ -170,4 +170,3 @@ func _wave3(time_value: float, seed_value: int) -> Vector3:
 func _phase(seed_value: int) -> float:
 	var wrapped: int = posmod(seed_value * 1103515245 + 12345, 65536)
 	return float(wrapped) / 65536.0 * TAU
-

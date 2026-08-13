@@ -26,4 +26,3 @@ extends Resource
 @export var view_toggle: StringName = &"camera_view_toggle"
 @export var rotate_left: StringName = &"camera_rotate_left"
 @export var rotate_right: StringName = &"camera_rotate_right"
-

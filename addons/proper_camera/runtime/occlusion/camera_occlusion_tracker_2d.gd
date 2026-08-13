@@ -81,4 +81,3 @@ func _same_members(left: Array[ProperCameraOccluder2D], right: Array[ProperCamer
 		if not right.has(item):
 			return false
 	return true
-

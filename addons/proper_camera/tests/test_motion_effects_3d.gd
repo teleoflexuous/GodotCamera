@@ -45,4 +45,3 @@ func test_zero_motion_intensity_suppresses_noise_channels() -> void:
 	assert_eq(sample["rotation"], Vector3.ZERO)
 	assert_eq(sample["fov_offset"], 0.0)
 	effects.free()
-

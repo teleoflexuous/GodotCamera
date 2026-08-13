@@ -26,4 +26,3 @@ func _open_example(path: String) -> void:
 	var result: Error = get_tree().change_scene_to_file(path)
 	if result != OK:
 		push_error("Could not open camera example: %s" % path)
-

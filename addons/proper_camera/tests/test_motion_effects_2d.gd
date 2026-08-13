@@ -63,4 +63,3 @@ func test_motion_intensity_zero_keeps_the_base_transform() -> void:
 	effects._process(0.2)
 	assert_eq(pivot.position, Vector2(9.0, 13.0))
 	assert_eq(pivot.rotation, 0.0)
-

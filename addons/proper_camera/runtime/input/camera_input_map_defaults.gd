@@ -44,4 +44,3 @@ static func _add_mouse_action(action: StringName, button: MouseButton) -> void:
 	var event: InputEventMouseButton = InputEventMouseButton.new()
 	event.button_index = button
 	InputMap.action_add_event(action, event)
-

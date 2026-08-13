@@ -34,4 +34,3 @@ func get_band_id(index: int) -> StringName:
 	if index < 0 or index >= bands.size() or bands[index] == null:
 		return &""
 	return bands[index].id
-

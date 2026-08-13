@@ -90,4 +90,3 @@ func _has_property(object: Object, property_name: StringName) -> bool:
 		if StringName(property.get(&"name", &"")) == property_name:
 			return true
 	return false
-

@@ -51,4 +51,3 @@ func test_property_mapper_applies_band_value_and_restores_original() -> void:
 	assert_eq(target.process_priority, 12)
 	mapper.restore_originals()
 	assert_eq(target.process_priority, 3)
-

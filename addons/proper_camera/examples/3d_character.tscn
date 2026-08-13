@@ -82,4 +82,3 @@ offset_right = 900.0
 offset_bottom = 95.0
 text = "3D CHARACTER â€” WASD move Â· RMB drag/right stick orbit Â· wheel/+/- zoom Â· V first/third person Â· R recenter"
 autowrap_mode = 2
-

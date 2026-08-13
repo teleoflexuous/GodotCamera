@@ -6,4 +6,3 @@ enum FadeMode {
 	INSTANCE_SHADER_PARAMETER,
 	AUTO,
 }
-

@@ -13,4 +13,3 @@ func _action_has_physical_key(action: StringName, key: Key) -> bool:
 		if key_event != null and key_event.physical_keycode == key:
 			return true
 	return false
-

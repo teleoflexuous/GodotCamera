@@ -59,4 +59,3 @@ extends Resource
 @export var bounds_max: Vector3 = Vector3(100.0, 100.0, 100.0)
 @export var terrain_clearance_enabled: bool = false
 @export_range(0.0, 100.0, 0.1) var minimum_terrain_clearance: float = 1.0
-

@@ -69,4 +69,3 @@ offset_right = 920.0
 offset_bottom = 95.0
 text = "3D MANAGEMENT - W/S advance/retreat in view | A/D strafe | MMB drag | RMB orbit | wheel/+/- zoom | F follow | R recenter | Q/E rotate"
 autowrap_mode = 2
-

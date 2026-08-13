@@ -107,4 +107,3 @@ func test_3d_instance_shader_fade_is_detected_and_restored() -> void:
 	occluder.clear_fade(1)
 	occluder._process(1.0)
 	assert_true(is_zero_approx(float(visual.get_instance_shader_parameter(&"camera_fade"))))
-

@@ -35,4 +35,3 @@ G.U.I.D.E. contexts, prompts, and remapping live in an optional companion integr
 The optional bridge never imports, preloads, exports, or type-hints Phantom classes. Bind an explicit preconfigured PhantomCamera2D/3D node. In PHANTOM mode, Phantom exclusively owns the final Camera, host lifecycle, priority/blending, SpringArm collision, and noise. The camera rig supplies target/focus, yaw/pitch, desired zoom/projection, constraints, metrics, and optional search intent.
 
 Use separate preconfigured PCams for SIMPLE and THIRD_PERSON or first/third-person behaviors. The bridge does not alter Phantom follow/look-at enum modes, create Camera3D resources, register a manager, or implement group/path framing. Editor validation accepts exactly `0.11.0.3`; `allow_untested_version` permits capability-probed operation with a warning. Missing or invalid Phantom produces one actionable error and does not fall back to native output.
-

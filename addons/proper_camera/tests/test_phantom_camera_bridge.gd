@@ -110,4 +110,3 @@ func test_configuration_requires_a_registered_or_autoloaded_manager() -> void:
 	bridge.bind_phantom_camera(phantom)
 	add_child_autofree(bridge)
 	assert_false(bridge.validate_configuration(false))
-

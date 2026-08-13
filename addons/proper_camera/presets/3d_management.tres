@@ -36,4 +36,3 @@ collision_recovery_speed = 6.0
 bounds_enabled = false
 terrain_clearance_enabled = true
 minimum_terrain_clearance = 1.0
-

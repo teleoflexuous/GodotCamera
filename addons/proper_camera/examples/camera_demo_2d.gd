@@ -52,4 +52,3 @@ func _draw() -> void:
 		draw_line(Vector2(x, -1200), Vector2(x, 1200), Color(0.16, 0.22, 0.3), 1.0)
 	for y: int in range(-1200, 1201, 100):
 		draw_line(Vector2(-2000, y), Vector2(2000, y), Color(0.16, 0.22, 0.3), 1.0)
-

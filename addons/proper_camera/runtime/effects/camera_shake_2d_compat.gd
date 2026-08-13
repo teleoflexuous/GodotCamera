@@ -75,4 +75,3 @@ func _ensure_motion_effects() -> void:
 	_motion_effects.target_pivot_path = NodePath("..")
 	_motion_effects.motion_intensity = motion_intensity
 	add_child(_motion_effects)
-

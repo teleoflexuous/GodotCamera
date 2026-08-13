@@ -92,4 +92,3 @@ func _disconnect_source() -> void:
 		if _source.is_connected(&"view_metrics_changed", callable):
 			_source.disconnect(&"view_metrics_changed", callable)
 	_source = null
-

@@ -33,4 +33,3 @@ extends Resource
 @export var bounds_enabled: bool = false
 @export var bounds: Rect2 = Rect2(-2000.0, -2000.0, 4000.0, 4000.0)
 @export var bounds_margin: Vector2 = Vector2.ZERO
-

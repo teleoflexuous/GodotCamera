@@ -181,4 +181,3 @@ func _on_became_active() -> void:
 func _on_became_inactive() -> void:
 	_is_phantom_active = false
 	active_changed.emit(false)
-

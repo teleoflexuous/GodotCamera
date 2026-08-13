@@ -33,4 +33,3 @@ func test_source_contract_describes_store_exclusions_and_companion_boundary() ->
 	var readme: String = FileAccess.get_file_as_string("res://addons/proper_camera/README.md")
 	assert_true(readme.contains("not in Store archives"))
 	assert_true(readme.contains("separate companion integration"))
-

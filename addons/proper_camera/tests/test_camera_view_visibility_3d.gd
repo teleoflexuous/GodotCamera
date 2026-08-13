@@ -42,4 +42,3 @@ func test_native_transparency_mode_restores_authored_value() -> void:
 	assert_true(is_equal_approx(visual.transparency, 0.9))
 	visibility.restore_originals()
 	assert_true(is_equal_approx(visual.transparency, 0.25))
-

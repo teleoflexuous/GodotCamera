@@ -21,4 +21,3 @@ func test_staged_official_phantom_surface_matches_the_pinned_bridge() -> void:
 	assert_true(source_3d.contains("set_spring_length"))
 	assert_true(source_3d.contains("set_fov"))
 	assert_true(source_3d.contains("set_size"))
-

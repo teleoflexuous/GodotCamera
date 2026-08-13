@@ -293,4 +293,3 @@ func _mark_activity() -> void:
 func _apply_motion_intensity() -> void:
 	if is_instance_valid(camera_rig) and camera_rig.has_method(&"set_motion_intensity"):
 		camera_rig.call(&"set_motion_intensity", preferences.motion_intensity)
-

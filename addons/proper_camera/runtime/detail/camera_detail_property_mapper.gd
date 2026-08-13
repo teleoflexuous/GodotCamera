@@ -107,4 +107,3 @@ func _is_compatible_value(current: Variant, next: Variant) -> bool:
 	return typeof(current) == typeof(next) or (
 		typeof(current) in [TYPE_INT, TYPE_FLOAT] and typeof(next) in [TYPE_INT, TYPE_FLOAT]
 	)
-

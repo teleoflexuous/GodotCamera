@@ -28,4 +28,3 @@ zoom_anchor = 1
 bounds_enabled = false
 bounds = Rect2(-2000, -2000, 4000, 4000)
 bounds_margin = Vector2(0, 0)
-
