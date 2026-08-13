@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.0.1 - Unreleased
+## 1.0.2 - Unreleased
 
+- Moved base-project settings bindings and controls out of the distributable addon.
 - Stabilized active character-camera occlusion at authored-route edges.
 - Made follow and recenter controls center assigned targets consistently.
 - Corrected forward/backward 3D management and RTS pan direction.
