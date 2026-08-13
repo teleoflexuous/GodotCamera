@@ -143,13 +143,12 @@ func test_toggle_follow_centers_then_tracks_a_moving_and_stationary_target() -> 
 	adapter.camera_rig = rig
 	add_child_autofree(adapter)
 	await get_tree().process_frame
-	var press := InputEventKey.new()
-	press.physical_keycode = KEY_F
+	var press: InputEventKey = InputMap.action_get_events(&"camera_follow_toggle")[0].duplicate() as InputEventKey
 	press.pressed = true
 	Input.parse_input_event(press)
 	adapter._process(1.0 / 60.0)
-	var release := InputEventKey.new()
-	release.physical_keycode = KEY_F
+	var release: InputEventKey = press.duplicate() as InputEventKey
+	release.pressed = false
 	Input.parse_input_event(release)
 
 	assert_true(rig.is_following())
