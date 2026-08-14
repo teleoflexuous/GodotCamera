@@ -9,9 +9,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: firebelley/setup-godot@v1
+      - uses: chickensoft-games/setup-godot@v2
         with:
-          godot-version: '4.7.0'
+          version: '4.7.0'
       - name: Import the standalone gallery project
         run: godot --headless --path . --import
       - name: Install GUT for source-only addon tests
