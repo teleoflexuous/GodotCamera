@@ -2,6 +2,8 @@
 
 ## 1.0.2 - Unreleased
 
+- Pinned the optional Phantom Camera bridge to v0.12 (Asset Library 1822, commit 0094dde).
+- Bridge tests accept a host project whose Phantom Camera manager is already registered.
 - Moved base-project settings bindings and controls out of the distributable addon.
 - Stabilized active character-camera occlusion at authored-route edges.
 - Made follow and recenter controls center assigned targets consistently.

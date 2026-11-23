@@ -4,7 +4,7 @@ extends Node
 signal configuration_failed(message: String)
 signal active_changed(active: bool)
 
-const SUPPORTED_VERSION: String = "0.11.0.3"
+const SUPPORTED_VERSION: String = "0.12"
 const PLUGIN_CONFIG_PATH: String = "res://addons/phantom_camera/plugin.cfg"
 
 @export var enabled: bool = false:

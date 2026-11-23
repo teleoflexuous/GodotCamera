@@ -6,6 +6,6 @@
   "source_only": ["examples/", "docs/", "tests/"],
   "dependencies": {
     "guide": "optional companion integration",
-    "phantom_camera": "optional; compatibility-tested v0.11.0.3"
+    "phantom_camera": "optional; compatibility-tested v0.12"
   }
 }
